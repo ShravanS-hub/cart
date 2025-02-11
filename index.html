@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Store</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+</head>
+<body>
+    <nav class="navbar">
+        <h1>Mobile Store</h1>
+        <ul class="nav-links">
+            <li><a href="index.html"><i class="fas fa-home"></i>Home</a></li>
+            <li><a href="cart.html"><i class="fas fa-shopping-cart"></i>Cart</a></li>
+            <li><a href="search.html"><i class="fas fa-search"></i>Search</a></li>
+            <li><a href="logout.html" class="logout-link"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
+            
+        </ul>
+    </nav>
+
+    <div class="hero">
+        <div class="hero-content">
+            <h2>Welcome to Our Mobile Store</h2>
+            <p>Discover the latest smartphones at the best prices.</p>
+            <a href="search.html" class="btn">Shop Now</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Welcome to Mobile Store</h2>
+        <p>Find the best smartphones at amazing prices!</p>
+        <div id="product-list" class="product-list"></div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            fetch('product.json')
+                .then(response => response.json())
+                .then(data => {
+                    // Filter only smartphones or undefined category
+                    // const products = data.products.filter(product => product.category === "smartphones" || product.category === undefined);
+                    const products = data.products; // No filtering, load all products
+
+                    const productList = document.getElementById("product-list");
+    
+                    products.forEach(product => {
+                        const productCard = document.createElement("div");
+                        productCard.classList.add("product-card");
+    
+                        productCard.innerHTML = `
+                            <img src="${product.image}" alt="${product.title}" width="200">
+                            <h3>${product.title}</h3>
+                            <p>${product.description}</p>
+                            <p><strong>Price:</strong> $${product.price}</p>
+                            <button onclick="addToCart(${product.id}, '${product.title}', ${product.price}, '${product.image}')">
+                                Add to Cart
+                            </button>
+                        `;
+    
+                        productList.appendChild(productCard);
+                    });
+                })
+                .catch(error => console.error("Error loading products:", error));
+        });
+    
+        function addToCart(id, title, price, image) {
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    
+            let existingItem = cart.find(item => item.id === id);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ id, title, price, image, quantity: 1 });
+            }
+    
+            localStorage.setItem("cart", JSON.stringify(cart));
+            alert(`${title} added to cart!`);
+        }
+    </script>
+    
+    
+</body>
+</html>
+
+
+
+

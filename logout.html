@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logout</title>
+    <link rel="stylesheet" href="css/style.css"> <!-- Link your CSS file -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+</head>
+<body>
+    <div class="logout-container">
+        <h2>You have been logged out.</h2>
+        <p>Thank you for visiting!</p>
+        <a href="login.html"><button>Go to Login</button></a>
+    </div>
+
+    <script>
+        // Clear user session
+        localStorage.removeItem("user");
+        localStorage.removeItem("cart"); // Optional: Clear cart if needed
+    </script>
+</body>
+</html>

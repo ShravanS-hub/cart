@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Products</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+</head>
+<body>
+    <nav class="navbar">
+        <h1>Mobile Store</h1>
+        <ul class="nav-links">
+            <li><a href="index.html"><i class="fas fa-home"></i>Home</a></li>
+            <li><a href="cart.html"><i class="fas fa-shopping-cart"></i>Cart</a></li>
+            <li><a href="search.html"><i class="fas fa-search"></i>Search</a></li>
+            <li><a href="logout.html" class="logout-link"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h2>Search for Products</h2>
+
+        <!-- Search Bar -->
+        <input type="text" id="search-bar" placeholder="Search for products..." oninput="searchProducts()">
+
+        <!-- Product List -->
+        <div id="product-list" class="product-list"></div>
+    </div>
+
+    <script>
+        let productsData = [];
+
+        document.addEventListener("DOMContentLoaded", () => {
+            fetch('product.json')
+                .then(response => response.json())
+                .then(data => {
+                    // Store products for search functionality
+                    productsData = data.products.filter(product => product.category === "smartphones" || product.category === undefined);
+                    displayProducts(productsData);
+                })
+                .catch(error => console.error("Error loading products:", error));
+        });
+
+        function displayProducts(products) {
+            const productList = document.getElementById("product-list");
+            productList.innerHTML = ""; // Clear previous results
+
+            products.forEach(product => {
+                const productCard = document.createElement("div");
+                productCard.classList.add("product-card");
+
+                productCard.innerHTML = `
+                    <img src="${product.image}" alt="${product.title}" width="200">
+                    <h3>${product.title}</h3>
+                    <p>${product.description}</p>
+                    <p><strong>Price:</strong> $${product.price}</p>
+                    <button onclick="addToCart(${product.id}, '${product.title}', ${product.price}, '${product.image}')">
+                        Add to Cart
+                    </button>
+                `;
+
+                productList.appendChild(productCard);
+            });
+        }
+
+        function searchProducts() {
+            let query = document.getElementById("search-bar").value.toLowerCase();
+            let filteredProducts = productsData.filter(product => product.title.toLowerCase().includes(query));
+            displayProducts(filteredProducts);
+        }
+
+        function addToCart(id, title, price, image) {
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+            let existingItem = cart.find(item => item.id === id);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ id, title, price, image, quantity: 1 });
+            }
+
+            localStorage.setItem("cart", JSON.stringify(cart));
+            alert(`${title} added to cart!`);
+        }
+    </script>
+</body>
+</html>
